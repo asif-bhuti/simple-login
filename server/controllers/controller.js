@@ -93,6 +93,7 @@ export const logout = (req, res) => {
   }
 
   // Remove the refresh token from the array
+
   refreshTokens.splice(tokenIndex, 1);
 
   res.status(200).json("You have been logged out successfully.");

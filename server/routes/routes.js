@@ -10,8 +10,8 @@ import {
 const router = express.Router();
 
 router.post("/api/login", login);
-router.post("/refresh", refresh);
-router.post("/logout", verify, logout);
-router.delete("/users/:userId", verify, deleteUser);
+router.post("/api/refresh", refresh);
+router.post("/api/logout", logout);
+router.delete("/api/users/:userId", verify, deleteUser);
 
 export default router;

@@ -30,7 +30,7 @@ const generateAccessToken = (user) => {
 };
 
 const generateRefreshToken = (user) => {
-  return jwt.sign({ id: user.id, role: user.role }, "myRefreshSecretKey");
+  return jwt.sign({ id: user.id, role: user.role }, "mySecretKey");
 };
 
 export const login = (req, res) => {
@@ -63,7 +63,7 @@ export const refresh = (req, res) => {
   if (!refreshTokens.includes(refreshToken)) {
     return res.status(403).json("Refresh token is not valid!");
   }
-  jwt.verify(refreshToken, "myRefreshSecretKey", (err, user) => {
+  jwt.verify(refreshToken, "mySecretKey", (err, user) => {
     err && console.log(err);
     refreshTokens = refreshTokens.filter((token) => token !== refreshToken);
 
@@ -81,8 +81,21 @@ export const refresh = (req, res) => {
 
 export const logout = (req, res) => {
   const refreshToken = req.body.token;
-  refreshTokens = refreshTokens.filter((token) => token !== refreshToken);
-  res.status(200).json("You logged out successfully.");
+
+  if (!refreshToken) {
+    return res.status(400).json("Refresh token not provided.");
+  }
+
+  // Check if the refresh token exists in the array
+  const tokenIndex = refreshTokens.indexOf(refreshToken);
+  if (tokenIndex === -1) {
+    return res.status(401).json("Invalid refresh token.");
+  }
+
+  // Remove the refresh token from the array
+  refreshTokens.splice(tokenIndex, 1);
+
+  res.status(200).json("You have been logged out successfully.");
 };
 
 export const deleteUser = (req, res) => {
